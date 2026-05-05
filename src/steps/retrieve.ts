@@ -2,6 +2,14 @@ import OpenAI from 'openai';
 import { pool } from '../infra/db.js';
 import { MODELS } from '../models.js';
 
+/*
+ * Finds the most relevant documents from the corpus for a given query. Combines
+ * pgvector cosine similarity with Postgres full-text search (tsvector BM25),
+ * then fuses the two ranked lists using Reciprocal Rank Fusion. Vector search
+ * wins on semantic similarity; BM25 wins on exact terms like customer names and
+ * port codes. Both are useful, so neither is discarded.
+ */
+
 const openai = new OpenAI({ maxRetries: 3 });
 
 export type RetrievedDoc = {
@@ -16,6 +24,11 @@ export type RetrieveFilter = {
   docType?: string;
 };
 
+/**
+ * Returns the top k documents from the corpus ranked by hybrid RRF score.
+ * Pass a docType filter to restrict results to a specific document category
+ * (e.g. "customer_profile").
+ */
 // Hybrid retrieval: pgvector cosine similarity + Postgres BM25 (tsvector),
 // fused with Reciprocal Rank Fusion (k=60). Neither source dominates —
 // vector wins on semantic similarity, BM25 wins on exact-term matches

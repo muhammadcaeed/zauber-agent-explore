@@ -3,6 +3,12 @@ import OpenAI from "openai";
 import { pool } from "./db.js";
 import { MODELS } from "../models.js";
 
+/*
+ * Development utility for inspecting the vector index. Runs a similarity search
+ * against the documents table and prints results to stdout. Not used by the
+ * production pipeline. Run with: npm run search
+ */
+
 const openai = new OpenAI({ maxRetries: 3 });
 
 async function search(query: string, k = 3) {

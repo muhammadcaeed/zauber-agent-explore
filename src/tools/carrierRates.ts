@@ -1,3 +1,12 @@
+/*
+ * Mock carrier rate API. Returns deterministic but plausible quotes for three
+ * carriers: Maersk, Hapag-Lloyd, and MSC. Prices scale linearly with weight and
+ * vary slightly per carrier. A real integration would authenticate against each
+ * carrier TMS and handle their rate-request schemas individually. The tool schema
+ * exported here is what gets passed to Sonnet during drafting, though the workflow
+ * currently calls getCarrierRates directly rather than via model-driven tool use.
+ */
+
 export type RateRequest = {
   origin: string;
   destination: string;

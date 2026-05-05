@@ -1,6 +1,14 @@
 import 'dotenv/config';
 import pg from 'pg';
 
+/*
+ * Opens the Postgres connection pool used by every other module that touches
+ * the database. The connection string comes from DATABASE_URL in the environment.
+ * The pool is a module-level singleton so all imports share the same connections.
+ * initSchema creates the documents table, indexes, and pgvector extension if they
+ * do not already exist. Safe to run multiple times.
+ */
+
 export const pool = new pg.Pool({
     connectionString: process.env.DATABASE_URL,
 });
@@ -10,6 +18,10 @@ process.on("SIGINT", () => {
   pool.end().finally(() => process.exit(0));
 });
 
+/**
+ * Creates the documents table and all required indexes if they do not exist.
+ * Idempotent. Run once on first setup, then again after any schema change.
+ */
 export async function initSchema() {
     await pool.query(`CREATE EXTENSION IF NOT EXISTS vector`);
 

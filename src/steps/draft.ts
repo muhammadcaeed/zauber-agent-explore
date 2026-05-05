@@ -6,6 +6,13 @@ import type { RateQuote } from "../tools/carrierRates.js";
 import type { TokenUsageCb } from "./extract.js";
 import { MODELS } from "../models.js";
 
+/*
+ * Produces the customer-facing reply. Sonnet receives the original email, live
+ * carrier rates, and retrieved context in a single prompt, then returns a draft
+ * reply with a self-reported confidence score. The confidence score feeds into
+ * the auto-send decision in workflow.ts alongside structural heuristics.
+ */
+
 const claude = new Anthropic({ maxRetries: 3 });
 
 const DRAFT_SYSTEM = `You are a freight forwarding sales assistant drafting replies to customer rate inquiries. \
@@ -61,6 +68,11 @@ function formatRates(rates: RateQuote[]): string {
     .join("\n");
 }
 
+/**
+ * Drafts a rate-quote reply for the customer.
+ * Emits a Langfuse generation under the provided trace.
+ * Returns the draft text, self-reported confidence (0 to 1), and a reasoning note.
+ */
 export async function draftReply(
   originalEmail: string,
   rates: RateQuote[],

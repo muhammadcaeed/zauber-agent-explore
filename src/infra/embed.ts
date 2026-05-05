@@ -6,6 +6,14 @@ import { join } from 'node:path';
 import { initSchema, pool } from './db.js';
 import { MODELS } from '../models.js';
 
+/*
+ * Reads every Markdown file from the corpus/ directory and inserts it into the
+ * documents table as an embedding vector. Skips files whose content hash has not
+ * changed to avoid unnecessary OpenAI API calls. Classifies each file by its
+ * filename prefix: quote- becomes past_quote, sop- becomes sop, customer- becomes
+ * customer_profile. Run this once after setup and again whenever corpus files change.
+ */
+
 const openai = new OpenAI({ maxRetries: 3 });
 
 async function embed(text: string): Promise<number[]> {

@@ -6,6 +6,14 @@ import type { TokenUsageCb } from "./extract.js";
 import { extractDetails } from "./extract.js";
 import { MODELS } from "../models.js";
 
+/*
+ * Runs a multi-turn loop to resolve missing shipment fields through back-and-forth
+ * with the customer. Each turn asks one focused question, waits for a reply, then
+ * re-extracts the full conversation to capture newly provided information. Stops
+ * when all required fields are present or the turn limit is reached. Callers supply
+ * pre-loaded replies to simulate the customer responses.
+ */
+
 const claude = new Anthropic({ maxRetries: 3 });
 
 const CLARIFY_SYSTEM = `You are a freight forwarding assistant clarifying incomplete rate-quote requests. \
@@ -52,6 +60,12 @@ export function buildConversationText(
   return `${emailText}\n\n${qa}`;
 }
 
+/**
+ * Resolves missing fields by asking the customer targeted questions.
+ * followUpReplies are the customer answers in order. Pass an empty array
+ * to get one question back without resolving anything.
+ * Returns lastQuestion: null when all required fields are resolved.
+ */
 export async function clarificationAgent(
   emailText: string,
   initial: ExtractedDetails,

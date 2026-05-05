@@ -4,6 +4,14 @@ import type { LangfuseTraceClient } from "langfuse";
 import type { ExtractedDetails } from "../types.js";
 import { MODELS } from "../models.js";
 
+/*
+ * Takes raw email text and turns it into structured fields the rest of the
+ * pipeline can work with. Uses Haiku with forced tool use so the output is
+ * always a schema, never free text. Zod validates the result before it leaves
+ * this file. If fields are missing they come back as null. The caller decides
+ * what to do with nulls.
+ */
+
 const claude = new Anthropic({ maxRetries: 3 });
 
 const EXTRACT_SYSTEM = `You are a freight forwarding data extraction assistant. \
@@ -65,6 +73,11 @@ export function computeMissingFields(input: Omit<ExtractedDetails, "missingField
 
 export type TokenUsageCb = (usage: { inputTokens: number; outputTokens: number }) => void;
 
+/**
+ * Extracts shipment details from an inbound customer email.
+ * Emits a Langfuse generation under the provided trace.
+ * Calls onUsage with token counts so the caller can aggregate across steps.
+ */
 export async function extractDetails(
   emailText: string,
   lfTrace: LangfuseTraceClient,

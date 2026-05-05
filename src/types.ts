@@ -1,3 +1,8 @@
+/*
+ * Shared types used across the pipeline. Keep this file flat. If a type is only
+ * used inside one module, define it there instead.
+ */
+
 export type ExtractedDetails = {
   origin: string | null;
   destination: string | null;

@@ -7,6 +7,15 @@ import { langfuse } from "./infra/observability.js";
 import type { LangfuseTraceClient } from "langfuse";
 import type { AgentResult, TokenBucket, TraceStep } from "./types.js";
 
+/*
+ * Orchestrates the full rate-quote pipeline. The steps run in a fixed order:
+ * extract fields from the email, ask the customer for anything missing, retrieve
+ * relevant context, fetch carrier rates, draft the reply, then blend the model
+ * confidence with structural heuristics to decide whether to auto-send or route
+ * to human review. Each step emits its own Langfuse span. The whole run is
+ * wrapped in a single trace so you can inspect every decision in one view.
+ */
+
 // Confidence below this threshold routes to human review.
 // Target: 95% precision on auto-sends (calibrate against eval set as it grows).
 const AUTO_SEND_THRESHOLD = 0.75;
@@ -17,6 +26,13 @@ const AUTO_SEND_THRESHOLD = 0.75;
 const INJECTION_PATTERN =
   /ignore (previous|prior|above|all)|system prompt|forget your instructions|jailbreak/i;
 
+/**
+ * Processes an inbound rate-quote email end to end.
+ * followUpReplies are pre-loaded customer answers used to resolve missing fields.
+ * Pass an empty array when no follow-up has occurred yet.
+ * Returns status "drafted", "needs_clarification", or "failed" along with the
+ * draft reply or clarification question depending on the outcome.
+ */
 export async function handleRateInquiry(
   emailText: string,
   followUpReplies: string[] = []
