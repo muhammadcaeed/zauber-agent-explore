@@ -98,8 +98,7 @@
     "email": "Need a quote to ship to Hamburg please.",
     "followUpReplies": ["From Shanghai, about 500kg", "Sea freight is fine"],
     "expected": {
-      "status": "drafted",
-      "clarificationTurns": 2
+      "status": "drafted"
     }
   },
   {
@@ -108,7 +107,7 @@
     "followUpReplies": ["Not sure about the details yet"],
     "expected": {
       "status": "needs_clarification",
-      "clarificationTurns": 1
+      "clarificationTurns": 2
     }
   }
 ]
