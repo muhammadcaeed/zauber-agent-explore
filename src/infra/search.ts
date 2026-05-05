@@ -1,15 +1,19 @@
 import "dotenv/config";
 import OpenAI from "openai";
 import { pool } from "./db.js";
+import { MODELS } from "../models.js";
 
-const openai = new OpenAI();
+const openai = new OpenAI({ maxRetries: 3 });
 
 async function search(query: string, k = 3) {
   const emb = await openai.embeddings.create({
-    model: "text-embedding-3-small",
+    model: MODELS.embedding,
     input: query
   });
-  const embStr = `[${emb.data[0].embedding.join(",")}]`;
+
+  const vector = emb.data[0]?.embedding;
+  if (!vector) throw new Error("No embedding returned from OpenAI");
+  const embStr = `[${vector.join(",")}]`;
 
   const r = await pool.query(
     `SELECT title, doc_type, content,
@@ -22,7 +26,7 @@ async function search(query: string, k = 3) {
 
   console.log(`\nQuery: "${query}"\n`);
   for (const row of r.rows) {
-    console.log(`  [${row.similarity.toFixed(3)}] ${row.title} (${row.doc_type})`);
+    console.log(`  [${(row.similarity as number).toFixed(3)}] ${row.title as string} (${row.doc_type as string})`);
   }
 }
 

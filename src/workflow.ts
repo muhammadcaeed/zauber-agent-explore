@@ -1,9 +1,9 @@
-import { extractDetails } from "./extract.js";
-import { retrieveRelevant } from "./retrieve.js";
+import { extractDetails } from "./steps/extract.js";
+import { retrieveRelevant } from "./steps/retrieve.js";
 import { getCarrierRates } from "./tools/carrierRates.js";
-import { draftReply } from "./draft.js";
-import { clarificationAgent } from "./clarify.js";
-import { langfuse } from "./observability.js";
+import { draftReply } from "./steps/draft.js";
+import { clarificationAgent } from "./steps/clarify.js";
+import { langfuse } from "./infra/observability.js";
 import type { LangfuseTraceClient } from "langfuse";
 import type { AgentResult, TokenBucket, TraceStep } from "./types.js";
 

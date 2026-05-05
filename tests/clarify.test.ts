@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildConversationText } from "../src/clarify.js";
+import { buildConversationText } from "../src/steps/clarify.js";
 
 describe("buildConversationText", () => {
   it("returns only email when no Q&A", () => {

@@ -21,7 +21,7 @@ export async function getCarrierRates(req: RateRequest): Promise<RateQuote[]> {
   const transit = req.mode === "air" ? 3 : req.mode === "road" ? 7 : 32;
   const validUntil = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     .toISOString()
-    .split("T")[0];
+    .split("T")[0] ?? "";
 
   const carriers = ["Maersk", "Hapag-Lloyd", "MSC"];
   return carriers.map((carrier, i) => ({

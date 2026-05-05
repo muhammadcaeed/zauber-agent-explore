@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { handleRateInquiry } from "./workflow.js";
-import { pool } from "./db.js";
+import { pool } from "./infra/db.js";
 
 type Scenario = {
   label: string;

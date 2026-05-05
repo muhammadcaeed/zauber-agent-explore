@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { readFile } from "node:fs/promises";
 import { handleRateInquiry } from "../src/workflow.js";
-import { pool } from "../src/db.js";
+import { pool } from "../src/infra/db.js";
 
 type EvalCase = {
   id: string;

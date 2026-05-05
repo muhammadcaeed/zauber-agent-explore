@@ -4,9 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx src/index.ts",
-    "embed": "tsx src/embed.ts",
-    "ask": "tsx src/ask.ts"
+    "init": "tsx src/infra/init.ts",
+    "embed": "tsx src/infra/embed.ts",
+    "search": "tsx src/infra/search.ts",
+    "agent": "tsx src/run.ts",
+    "eval": "tsx evals/run.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
@@ -15,13 +19,16 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.92.0",
     "dotenv": "^17.4.2",
+    "langfuse": "^3.38.20",
     "openai": "^6.35.0",
-    "pg": "^8.20.0"
+    "pg": "^8.20.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/node": "^25.6.0",
     "@types/pg": "^8.20.0",
     "tsx": "^4.21.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.5"
   }
 }

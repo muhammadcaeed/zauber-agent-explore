@@ -1,10 +1,10 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import type { LangfuseTraceClient } from "langfuse";
-import type { ExtractedDetails } from "./types.js";
+import type { ExtractedDetails } from "../types.js";
 import type { TokenUsageCb } from "./extract.js";
 import { extractDetails } from "./extract.js";
-import { MODELS } from "./models.js";
+import { MODELS } from "../models.js";
 
 const claude = new Anthropic({ maxRetries: 3 });
 
