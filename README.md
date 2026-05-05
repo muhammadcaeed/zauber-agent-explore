@@ -1,8 +1,8 @@
 # Zauber rate-quote agent
 
-A take-home for the Zauber founding engineer role. The brief: rate-quote emails come in, an agent reads them, gets carrier prices, and replies. If the email is missing something it needs, the agent asks. Drafts the agent isn't sure about go to a human.
+The brief: rate-quote emails come in, an agent reads them, gets carrier prices, and replies. If the email is missing something it needs, the agent asks. Drafts the agent isn't sure about go to a human.
 
-I built it the way I'd build a v0 at work. Cheap model where it can get away with it, better model where it can't, real validation on every LLM output, and a confidence score that's honest about when to hand off.
+Cheap model where it can get away with it, better model where it can't, real validation on every LLM output, and a confidence score that's honest about when to hand off.
 
 ## The pipeline
 
