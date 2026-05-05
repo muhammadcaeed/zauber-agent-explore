@@ -101,11 +101,17 @@ export async function clarificationAgent(
 
     const toolUse = res.content.find((c) => c.type === "tool_use");
     if (!toolUse || toolUse.type !== "tool_use") {
-      gen.end({ output: { error: "no tool use in clarify turn" } });
-      break;
+      gen.end({ output: { error: "no tool use in clarify turn" }, level: "ERROR" });
+      throw new Error("Clarification turn did not produce tool use");
     }
 
-    const { question } = AskSchema.parse(toolUse.input);
+    let question: string;
+    try {
+      ({ question } = AskSchema.parse(toolUse.input));
+    } catch (err) {
+      gen.end({ output: { error: String(err) }, level: "ERROR" });
+      throw err;
+    }
     lastQuestion = question;
     turns = i + 1;
     questions.push(question);
