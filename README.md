@@ -73,8 +73,25 @@ the function throws. The workflow catches this at the top level and records a `f
 `extractDetails` again on the full conversation text. This means every previously answered
 field stays in scope. The loop stops when `missingFields` is empty or the turn limit is hit.
 
+**Note on replies:** Customer replies are passed in as a `followUpReplies` array — the first
+reply answers the first question, the second answers the second, and so on. In the current
+implementation these are pre-loaded in `src/run.ts` to simulate a conversation. A production
+system would collect each reply from an actual customer response in real time.
+
 **Output contract:** `ClarifyResult` — the latest extraction, turn count, and
 `lastQuestion`. A null `lastQuestion` means all required fields are resolved.
+
+---
+
+### Retrieve
+
+**Index:** HNSW (Hierarchical Navigable Small World) via pgvector. Chosen over IVFFlat
+because it requires no training step and delivers better recall on small corpora. The index
+is dropped and recreated on each `npm run init` so schema changes always produce a fresh index.
+
+**Search strategy:** Hybrid — pgvector cosine similarity for semantic matches, Postgres
+tsvector BM25 for exact-term matches (customer names, port codes). Both run against a
+candidate pool of 20 documents and the results are fused with Reciprocal Rank Fusion (k=60).
 
 ---
 
@@ -218,10 +235,10 @@ src/
     search.ts        Development utility for inspecting the vector index
   tools/
     carrierRates.ts  Mock carrier rate API with tool schema for Claude
-  workflow.ts        Pipeline orchestration and confidence blend
+  workflow.ts        Pipeline orchestration, confidence blend, and AUTO_SEND_THRESHOLD
   run.ts             CLI entry point with scenario runner
   types.ts           Shared TypeScript types
-  models.ts          Model IDs, AUTO_SEND_THRESHOLD, and tunables
+  models.ts          Model IDs and embedding model constant
 
 evals/
   dataset.json       10 labelled test cases
