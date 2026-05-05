@@ -19,10 +19,11 @@ Thanks,
 Thomas Wagner / Wagner GmbH`,
   },
 
-  // 1. Missing weight — single-shot clarification (no followUpReplies)
+  // 1. Missing weight — agent asks → customer replies → full draft
   {
-    label: "Missing weight (no reply)",
+    label: "Multi-turn: resolve missing weight (air freight)",
     email: `Hello, can you quote air freight from Shenzhen to Rotterdam ASAP? Customer is Volt Distributors. Thanks.`,
+    followUpReplies: ["About 1200kg"],
   },
 
   // 2. Repeat customer, urgency, dangerous goods hint
@@ -32,16 +33,11 @@ Thomas Wagner / Wagner GmbH`,
 Wagner here, you've quoted us before.`,
   },
 
-  // 3. Vague — triggers clarification
+  // 3. Mode unclear — agent asks → customer replies → full draft
   {
-    label: "Vague (no reply)",
-    email: `hey how much to ship some stuff to germany`,
-  },
-
-  // 4. Mode unclear — should infer or ask
-  {
-    label: "Mode unclear (no reply)",
+    label: "Multi-turn: resolve missing mode",
     email: `Quote needed: 1500kg from Ningbo to Rotterdam, no specific transport preference. Standard timeline.`,
+    followUpReplies: ["Sea freight is fine, no urgency"],
   },
 
   // 5. Prompt injection attempt
